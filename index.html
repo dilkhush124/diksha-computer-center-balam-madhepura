@@ -15,7 +15,7 @@
 
   <header class="hero">
     <div class="brand">
-      <img src="logo.jpg" alt="Diksha Computer Center Logo">
+      <img src="assets/logo.jpg" alt="Diksha Computer Center Logo">
       <div>
         <h1>DIKSHA COMPUTER CENTER</h1>
         <h2>BALAM MADHEPURA</h2>
@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="owner">
-      <img src="santosh-mukhiya.jpg" alt="Santosh Mukhiya">
+      <img src="assets/santosh-mukhiya.jpg" alt="Santosh Mukhiya">
       <div>
         <strong>SANTOSH MUKHIYA</strong>
         <small>PROPRIETOR</small>
@@ -54,21 +54,14 @@
         <a class="cta" href="#services">Explore All Services →</a>
       </div>
       <div class="center-photo">
-        <img src="santosh-mukhiya.jpg" alt="Center Representative">
+        <img src="assets/santosh-mukhiya.jpg" alt="Center Representative">
       </div>
       <aside class="login-card">
         <h3>USER LOGIN</h3>
-        <p>Sign in to manage website notifications.</p>
+        <p>Login करके अपना User Dashboard देखें।</p>
         <button class="primary" id="loginBtn2">Login to Dashboard</button>
+        <button class="link-btn" id="registerBtn2">New User? Register Now</button>
       </aside>
-    </section>
-
-    <section id="notifications" class="notice-section">
-      <div class="section-title">
-        <span>LIVE UPDATES</span>
-        <h2>Latest Notifications</h2>
-      </div>
-      <div id="notificationList" class="notification-list"></div>
     </section>
 
     <section id="services">
@@ -96,7 +89,7 @@
         <p>Our goal is to make online government, banking, education and document-related services easier and more accessible.</p>
       </div>
       <div class="owner-card">
-        <img src="santosh-mukhiya.jpg" alt="Santosh Mukhiya">
+        <img src="assets/santosh-mukhiya.jpg" alt="Santosh Mukhiya">
         <h3>SANTOSH MUKHIYA</h3><p>Proprietor</p>
       </div>
     </section>
@@ -112,7 +105,7 @@
 
     <section id="gallery">
       <div class="section-title"><span>OUR CENTER</span><h2>Gallery</h2></div>
-      <div class="gallery"><img src="santosh-mukhiya.jpg" alt="Gallery"></div>
+      <div class="gallery"><img src="assets/santosh-mukhiya.jpg" alt="Gallery"></div>
     </section>
 
     <section id="reviews" class="reviews">
@@ -140,28 +133,50 @@
     <div class="modal-box">
       <button class="close" id="closeLogin">×</button>
       <h2>USER LOGIN</h2>
-      <p>Authorized users can publish website notifications.</p>
+      <p>अपने registered account से login करें।</p>
       <input id="username" placeholder="Username" autocomplete="username">
       <input id="password" type="password" placeholder="Password" autocomplete="current-password">
       <button class="primary" id="doLogin">Login</button>
+      <button class="link-btn" id="openRegister">New User? Create Account</button>
       <p id="loginError" class="error"></p>
     </div>
   </div>
 
-  <div id="adminModal" class="modal">
-    <div class="modal-box admin">
-      <button class="close" id="closeAdmin">×</button>
-      <h2>ADMIN NOTIFICATION PANEL</h2>
-      <p>Publish an update that will appear in “Latest Notifications”.</p>
-      <input id="noticeTitle" placeholder="Notification title">
-      <textarea id="noticeText" placeholder="Write your notification..."></textarea>
-      <div class="admin-actions">
-        <button class="primary" id="publishNotice">Publish Notification</button>
-        <button class="secondary" id="logout">Logout</button>
-      </div>
-      <div id="adminNotices"></div>
+  <div id="registerModal" class="modal">
+    <div class="modal-box">
+      <button class="close" id="closeRegister">×</button>
+      <h2>NEW USER REGISTRATION</h2>
+      <p>Create your account to login to DIKSHA COMPUTER CENTER.</p>
+      <input id="regName" placeholder="Full Name" autocomplete="name">
+      <input id="regMobile" inputmode="numeric" maxlength="10" placeholder="10-digit Mobile Number" autocomplete="tel">
+      <input id="regUsername" placeholder="Choose Username" autocomplete="username">
+      <input id="regPassword" type="password" placeholder="Create Password (minimum 6 characters)" autocomplete="new-password">
+      <input id="regConfirmPassword" type="password" placeholder="Confirm Password" autocomplete="new-password">
+      <button class="primary" id="doRegister">Register</button>
+      <button class="link-btn" id="backToLogin">Already registered? Login</button>
+      <p id="registerError" class="error"></p>
+      <p id="registerSuccess" class="success"></p>
     </div>
   </div>
+
+  <div id="userModal" class="modal">
+    <div class="modal-box">
+      <button class="close" id="closeUser">×</button>
+      <h2>USER DASHBOARD</h2>
+      <div class="user-welcome">
+        <div class="user-avatar">👤</div>
+        <h3 id="userWelcomeName">Welcome</h3>
+        <p>You are successfully logged in.</p>
+      </div>
+      <div class="user-details">
+        <p><b>Username:</b> <span id="userDashUsername"></span></p>
+        <p><b>Mobile:</b> <span id="userDashMobile"></span></p>
+      </div>
+      <button class="secondary full-btn" id="userLogout">Logout</button>
+    </div>
+  </div>
+
+
 
   <script src="script.js"></script>
 </body>
