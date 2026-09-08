@@ -1,99 +1,105 @@
 const loginModal = document.getElementById("loginModal");
+const registerModal = document.getElementById("registerModal");
 const userModal = document.getElementById("userModal");
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "DCC@2026";
+const USERS_KEY = "diksha_users_v2";
+
+function getUsers(){
+  try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
+  catch { return []; }
+}
+function saveUsers(users){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+function encodePassword(password){ return btoa(unescape(encodeURIComponent(password))); }
 
 function openLogin(){
+  registerModal.classList.remove("show");
   loginModal.classList.add("show");
   document.getElementById("loginError").textContent = "";
+}
+function openRegister(){
+  loginModal.classList.remove("show");
+  registerModal.classList.add("show");
+  document.getElementById("registerError").textContent = "";
+  document.getElementById("registerSuccess").textContent = "";
 }
 
 document.getElementById("loginBtn").onclick = openLogin;
 document.getElementById("loginBtn2").onclick = openLogin;
+document.getElementById("registerBtn2").onclick = openRegister;
+document.getElementById("openRegister").onclick = openRegister;
+document.getElementById("backToLogin").onclick = openLogin;
 document.getElementById("closeLogin").onclick = () => loginModal.classList.remove("show");
+document.getElementById("closeRegister").onclick = () => registerModal.classList.remove("show");
 document.getElementById("closeUser").onclick = () => userModal.classList.remove("show");
+document.getElementById("userLogout").onclick = () => userModal.classList.remove("show");
+
+document.getElementById("doRegister").onclick = () => {
+  const name = document.getElementById("regName").value.trim();
+  const mobile = document.getElementById("regMobile").value.replace(/\D/g, "");
+  const username = document.getElementById("regUsername").value.trim().toLowerCase();
+  const password = document.getElementById("regPassword").value;
+  const confirmPassword = document.getElementById("regConfirmPassword").value;
+  const error = document.getElementById("registerError");
+  const success = document.getElementById("registerSuccess");
+  error.textContent = "";
+  success.textContent = "";
+
+  if(name.length < 2){ error.textContent = "कृपया अपना पूरा नाम दर्ज करें।"; return; }
+  if(!/^\d{10}$/.test(mobile)){ error.textContent = "कृपया 10 अंकों का सही मोबाइल नंबर दर्ज करें।"; return; }
+  if(!/^[a-z0-9._-]{4,20}$/.test(username)){ error.textContent = "Username 4-20 characters का होना चाहिए।"; return; }
+  if(password.length < 6){ error.textContent = "Password कम से कम 6 characters का होना चाहिए।"; return; }
+  if(password !== confirmPassword){ error.textContent = "दोनों Password समान नहीं हैं।"; return; }
+
+  const users = getUsers();
+  if(users.some(u => u.username === username)){ error.textContent = "यह Username पहले से registered है।"; return; }
+  if(users.some(u => u.mobile === mobile)){ error.textContent = "यह Mobile Number पहले से registered है।"; return; }
+
+  users.push({
+    name,
+    mobile,
+    username,
+    password: encodePassword(password),
+    registeredAt: new Date().toLocaleString("en-IN")
+  });
+  saveUsers(users);
+
+  success.textContent = "Registration सफल हुआ! अब Login करें।";
+  document.getElementById("regPassword").value = "";
+  document.getElementById("regConfirmPassword").value = "";
+  setTimeout(() => {
+    registerModal.classList.remove("show");
+    document.getElementById("username").value = username;
+    document.getElementById("password").value = "";
+    loginModal.classList.add("show");
+  }, 700);
+};
 
 document.getElementById("doLogin").onclick = () => {
-  const username = document.getElementById("username").value.trim();
+  const username = document.getElementById("username").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
   const error = document.getElementById("loginError");
   error.textContent = "";
 
-  if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
-    loginModal.classList.remove("show");
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-    userModal.classList.add("show");
-    renderAdminApplications();
-  } else {
-    error.textContent = "Admin Username या Password गलत है।";
-  }
-};
-
-document.getElementById("adminLogout").onclick = () => userModal.classList.remove("show");
-document.getElementById("refreshApplications").onclick = renderAdminApplications;
-document.getElementById("adminSearch").addEventListener("input", renderAdminApplications);
-
-function escapeHtml(value){
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[ch]));
-}
-
-function renderAdminApplications(){
-  const list = document.getElementById("adminApplicationsList");
-  const search = (document.getElementById("adminSearch").value || "").trim().toLowerCase();
-  const applications = getApplications().slice().reverse();
-
-  const today = new Date().toLocaleDateString("en-IN");
-  const todayCount = applications.filter(a => String(a.createdAt || "").startsWith(today)).length;
-
-  document.getElementById("totalApplications").textContent = applications.length;
-  document.getElementById("todayApplications").textContent = todayCount;
-
-  const filtered = applications.filter(a => {
-    const hay = [a.applicationNo,a.name,a.mobile,a.whatsapp,a.reason,a.createdAt].join(" ").toLowerCase();
-    return hay.includes(search);
-  });
-
-  if(!filtered.length){
-    list.innerHTML = '<div class="admin-item"><b>No applications found.</b><br><small>Customer Apply Now form submit करने के बाद application यहाँ दिखाई देगी।</small></div>';
+  const user = getUsers().find(u => u.username === username && u.password === encodePassword(password));
+  if(!user){
+    error.textContent = "Username या Password गलत है। पहले Register करें।";
     return;
   }
 
-  list.innerHTML = filtered.map(a => `
-    <div class="application-row">
-      <div class="application-top">
-        <span class="application-no">${escapeHtml(a.applicationNo)}</span>
-        <span class="application-date">${escapeHtml(a.createdAt)}</span>
-      </div>
-      <div class="application-grid">
-        <div><span>Name:</span> <b>${escapeHtml(a.name)}</b></div>
-        <div><span>Mobile:</span> <b>${escapeHtml(a.mobile)}</b></div>
-        <div><span>WhatsApp:</span> <b>${escapeHtml(a.whatsapp)}</b></div>
-        <div><span>Apply For:</span> <b>${escapeHtml(a.reason)}</b></div>
-      </div>
-    </div>
-  `).join("");
-}
-
-document.getElementById("exportApplications").onclick = () => {
-  const applications = getApplications();
-  const blob = new Blob([JSON.stringify(applications, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "diksha-applications.json";
-  a.click();
-  URL.revokeObjectURL(url);
+  loginModal.classList.remove("show");
+  document.getElementById("userWelcomeName").textContent = `Welcome, ${user.name}`;
+  document.getElementById("userDashUsername").textContent = user.username;
+  document.getElementById("userDashMobile").textContent = user.mobile;
+  userModal.classList.add("show");
+  document.getElementById("password").value = "";
 };
 
-[loginModal, userModal].forEach(modal => {
+[loginModal, registerModal, userModal].forEach(modal => {
   modal.addEventListener("click", e => {
     if(e.target === modal) modal.classList.remove("show");
   });
 });
+
 
 /* APPLY NOW + RECEIPT SYSTEM */
 const applyModal = document.getElementById("applyModal");
