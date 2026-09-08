@@ -40,7 +40,7 @@
     <a href="#gallery">Gallery</a>
     <a href="#reviews">Reviews</a>
     <a href="#contact">Contact</a>
-    <button id="loginBtn">🔐 User Login</button>
+    <button id="loginBtn">🔐 Admin Login</button>
   </nav>
 
   <main id="home">
@@ -57,11 +57,12 @@
       <div class="center-photo">
         <img src="santosh-mukhiya.jpg" alt="Center Representative">
       </div>
-      <aside class="login-card">
-        <h3>USER LOGIN</h3>
-        <p>Login करके अपना User Dashboard देखें।</p>
-        <button class="primary" id="loginBtn2">Login to Dashboard</button>
-        <button class="link-btn" id="registerBtn2">New User? Register Now</button>
+      <aside class="login-card admin-login-card">
+        <div class="admin-badge">🔐 ADMIN</div>
+        <h3>ADMIN LOGIN</h3>
+        <p>Login करके सभी customer applications देखें।</p>
+        <button class="primary" id="loginBtn2">Login to Admin Panel</button>
+        <p class="admin-mini">Only center administrator</p>
       </aside>
     </section>
 
@@ -130,53 +131,57 @@
 
   <footer>© 2026 DIKSHA COMPUTER CENTER BALAM MADHEPURA · All Rights Reserved</footer>
 
+  <!-- ADMIN LOGIN -->
   <div id="loginModal" class="modal">
-    <div class="modal-box">
+    <div class="modal-box admin-login-box">
       <button class="close" id="closeLogin">×</button>
-      <h2>USER LOGIN</h2>
-      <p>अपने registered account से login करें।</p>
-      <input id="username" placeholder="Username" autocomplete="username">
-      <input id="password" type="password" placeholder="Password" autocomplete="current-password">
-      <button class="primary" id="doLogin">Login</button>
-      <button class="link-btn" id="openRegister">New User? Create Account</button>
+      <div class="admin-lock">🔐</div>
+      <h2>ADMIN LOGIN</h2>
+      <p>DIKSHA COMPUTER CENTER · BALAM MADHEPURA</p>
+
+      <label class="admin-label" for="username">ADMIN USERNAME</label>
+      <input id="username" placeholder="Enter admin username" autocomplete="username">
+
+      <label class="admin-label" for="password">PASSWORD</label>
+      <input id="password" type="password" placeholder="Enter admin password" autocomplete="current-password">
+
+      <button class="primary" id="doLogin">Login to Admin Panel</button>
       <p id="loginError" class="error"></p>
+      <p class="admin-security-note">Admin access is intended only for the center administrator.</p>
     </div>
   </div>
 
-  <div id="registerModal" class="modal">
-    <div class="modal-box">
-      <button class="close" id="closeRegister">×</button>
-      <h2>NEW USER REGISTRATION</h2>
-      <p>Create your account to login to DIKSHA COMPUTER CENTER.</p>
-      <input id="regName" placeholder="Full Name" autocomplete="name">
-      <input id="regMobile" inputmode="numeric" maxlength="10" placeholder="10-digit Mobile Number" autocomplete="tel">
-      <input id="regUsername" placeholder="Choose Username" autocomplete="username">
-      <input id="regPassword" type="password" placeholder="Create Password (minimum 6 characters)" autocomplete="new-password">
-      <input id="regConfirmPassword" type="password" placeholder="Confirm Password" autocomplete="new-password">
-      <button class="primary" id="doRegister">Register</button>
-      <button class="link-btn" id="backToLogin">Already registered? Login</button>
-      <p id="registerError" class="error"></p>
-      <p id="registerSuccess" class="success"></p>
-    </div>
-  </div>
-
+  <!-- ADMIN DASHBOARD -->
   <div id="userModal" class="modal">
-    <div class="modal-box">
+    <div class="modal-box admin-dashboard-box">
       <button class="close" id="closeUser">×</button>
-      <h2>USER DASHBOARD</h2>
-      <div class="user-welcome">
-        <div class="user-avatar">👤</div>
-        <h3 id="userWelcomeName">Welcome</h3>
-        <p>You are successfully logged in.</p>
+      <div class="admin-dashboard-head">
+        <div>
+          <div class="admin-badge">🔐 ADMIN PANEL</div>
+          <h2>Customer Applications</h2>
+          <p>DIKSHA COMPUTER CENTER · BALAM MADHEPURA</p>
+        </div>
       </div>
-      <div class="user-details">
-        <p><b>Username:</b> <span id="userDashUsername"></span></p>
-        <p><b>Mobile:</b> <span id="userDashMobile"></span></p>
+
+      <div class="admin-stats">
+        <div><strong id="totalApplications">0</strong><span>Total Applications</span></div>
+        <div><strong id="todayApplications">0</strong><span>Today's Applications</span></div>
       </div>
-      <button class="secondary full-btn" id="userLogout">Logout</button>
+
+      <div class="admin-toolbar">
+        <input id="adminSearch" placeholder="Search name, mobile, application no.">
+        <button class="secondary" id="refreshApplications">↻ Refresh</button>
+      </div>
+
+      <div id="adminApplicationsList" class="admin-applications-list"></div>
+
+      <div class="admin-dashboard-actions">
+        <button class="secondary" id="exportApplications">⬇ Export Data</button>
+        <button class="primary" id="adminLogout">Logout</button>
+      </div>
+      <p class="admin-data-note">Note: इस version में applications इसी browser/device में saved हैं। Central online database बाद में जोड़ सकते हैं।</p>
     </div>
   </div>
-
 
 
   <!-- APPLY NOW MODAL -->
