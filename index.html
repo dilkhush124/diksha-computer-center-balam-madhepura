@@ -35,6 +35,7 @@
     <a href="#home">Home</a>
     <a href="#about">About</a>
     <a href="#services">Online Services</a>
+    <a href="#applyNow" class="apply-nav">📝 Apply Now</a>
     <a href="#courses">Courses</a>
     <a href="#gallery">Gallery</a>
     <a href="#reviews">Reviews</a>
@@ -176,6 +177,94 @@
     </div>
   </div>
 
+
+
+  <!-- APPLY NOW MODAL -->
+  <div id="applyModal" class="modal">
+    <div class="modal-box apply-box">
+      <button class="close" id="closeApply">×</button>
+      <div class="apply-heading">
+        <span class="apply-icon">📝</span>
+        <div>
+          <h2>APPLY NOW</h2>
+          <p>DIKSHA COMPUTER CENTER · BALAM MADHEPURA</p>
+        </div>
+      </div>
+      <form id="applyForm">
+        <label for="applyName">NAME <span>*</span></label>
+        <input id="applyName" required placeholder="अपना पूरा नाम दर्ज करें" autocomplete="name">
+
+        <label for="applyMobile">MOBILE NUMBER <span>*</span></label>
+        <input id="applyMobile" required inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर" autocomplete="tel">
+
+        <label for="applyWhatsapp">WHATSAPP NUMBER <span>*</span></label>
+        <input id="applyWhatsapp" required inputmode="numeric" maxlength="10" placeholder="10 अंकों का WhatsApp नंबर">
+
+        <label for="applyReason">VISIT REASON / आप क्या APPLY करना चाहते हैं? <span>*</span></label>
+        <select id="applyReason" required>
+          <option value="">-- सेवा चुनें --</option>
+          <option>Aadhaar Services</option>
+          <option>PAN Card</option>
+          <option>Certificate Services</option>
+          <option>Money Transfer / AEPS / DMT</option>
+          <option>Electricity Bill Payment</option>
+          <option>Mobile Recharge</option>
+          <option>Exam / Scholarship Application</option>
+          <option>Government Scheme</option>
+          <option>Train / Flight Ticket</option>
+          <option>Computer Course Admission</option>
+          <option>Print / Photocopy</option>
+          <option>Bank Account Opening</option>
+          <option value="Other">Other / अन्य</option>
+        </select>
+
+        <input id="applyOtherReason" class="other-reason" placeholder="अन्य सेवा का नाम लिखें">
+
+        <button class="primary apply-submit" type="submit">Submit Application & Generate Receipt →</button>
+        <p id="applyError" class="error"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION RECEIPT -->
+  <div id="receiptModal" class="modal">
+    <div class="modal-box receipt-box">
+      <button class="close no-print" id="closeReceipt">×</button>
+      <div id="receiptPrintArea" class="receipt">
+        <div class="receipt-head">
+          <img src="logo.jpg" alt="Diksha Computer Center Logo">
+          <div>
+            <h2>DIKSHA COMPUTER CENTER</h2>
+            <h3>BALAM MADHEPURA</h3>
+            <p>Digital Services | Computer Education | Online Services</p>
+          </div>
+        </div>
+        <div class="receipt-title">APPLICATION / VISIT RECEIPT</div>
+        <div class="receipt-number">Application No.: <strong id="receiptNo"></strong></div>
+        <div class="receipt-details">
+          <div><span>Name</span><strong id="receiptName"></strong></div>
+          <div><span>Mobile Number</span><strong id="receiptMobile"></strong></div>
+          <div><span>WhatsApp Number</span><strong id="receiptWhatsapp"></strong></div>
+          <div><span>Visit Reason / Apply For</span><strong id="receiptReason"></strong></div>
+          <div><span>Date & Time</span><strong id="receiptDate"></strong></div>
+        </div>
+        <div class="receipt-note">
+          <strong>Thank You!</strong><br>
+          आपका आवेदन/विजिट अनुरोध DIKSHA COMPUTER CENTER, BALAM MADHEPURA में दर्ज किया गया है।
+          इस receipt को अपने पास सुरक्षित रखें।
+        </div>
+        <div class="receipt-footer">
+          <span>DIKSHA COMPUTER CENTER<br>BALAM MADHEPURA</span>
+          <span>Proprietor<br><strong>SANTOSH MUKHIYA</strong></span>
+        </div>
+      </div>
+      <div class="receipt-actions no-print">
+        <button class="primary" id="printReceipt">🖨️ Print / Save as PDF</button>
+        <button class="secondary" id="newApplication">+ New Application</button>
+      </div>
+      <p class="pdf-help no-print">Print window में <b>Destination: Save to PDF</b> चुनकर receipt PDF में save कर सकते हैं।</p>
+    </div>
+  </div>
 
 
   <script src="script.js"></script>
