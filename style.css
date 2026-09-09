@@ -53,3 +53,24 @@
   .receipt-details div{grid-template-columns:44% 56%;font-size:13px}
   .receipt-actions{flex-direction:column}
 }
+
+.admin-panel-box{width:min(650px,100%);max-height:90vh;overflow:auto}
+.admin-stats{display:flex;gap:12px;margin-top:15px}
+.admin-stats>div{flex:1;background:#eef6ff;border-radius:10px;padding:14px;text-align:center}
+.admin-stats strong{display:block;font-size:28px;color:#073d91}
+.admin-stats small{display:block;color:#607080;font-weight:700}
+.admin-actions{display:flex;gap:10px;margin-top:12px}
+.admin-actions .primary{width:auto;flex:1}
+.admin-actions .secondary{width:auto}
+.admin-applications{margin-top:15px}
+.admin-applications h3{color:#073d91;border-bottom:1px solid #dbe5ef;padding-bottom:8px}
+.admin-item{margin-top:10px;padding:14px;background:#f4f7fb;border-radius:10px;border-left:4px solid #0b7df0}
+.admin-item p{margin:7px 0;font-size:13px}
+.admin-item small{color:#718096;float:right}
+.admin-item .secondary{padding:7px 12px;margin-top:4px}
+.admin-empty{text-align:center;padding:18px;background:#f4f7fb;border-radius:10px;color:#607080;font-weight:700}
+@media(max-width:700px){
+  .admin-actions{flex-direction:column}
+  .admin-actions .primary,.admin-actions .secondary{width:100%}
+  .admin-item small{float:none;display:block;margin-top:3px}
+}
