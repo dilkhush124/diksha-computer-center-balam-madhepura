@@ -22,12 +22,11 @@ function doPost(e) {
 
     if (data.action === "delete") {
       const applicationNo = String(data.applicationNo || "").trim();
-      if (!applicationNo) throw new Error("Application number is required.");
       const values = sheet.getDataRange().getValues();
       for (let i = values.length - 1; i >= 1; i--) {
         if (String(values[i][0]) === applicationNo) {
           sheet.deleteRow(i + 1);
-          return json({ success: true, message: "Application deleted." });
+          return json({success:true});
         }
       }
       throw new Error("Application not found.");
@@ -36,54 +35,45 @@ function doPost(e) {
     if (data.action === "status") {
       const applicationNo = String(data.applicationNo || "").trim();
       const status = String(data.status || "New").trim();
-      if (!applicationNo) throw new Error("Application number is required.");
-      if (["New", "Processing", "Completed"].indexOf(status) === -1) throw new Error("Invalid status.");
+      if (["New","Processing","Completed"].indexOf(status) === -1) throw new Error("Invalid status.");
       const values = sheet.getDataRange().getValues();
       for (let i = 1; i < values.length; i++) {
         if (String(values[i][0]) === applicationNo) {
           sheet.getRange(i + 1, 7).setValue(status);
-          return json({ success: true, message: "Status updated." });
+          return json({success:true});
         }
       }
       throw new Error("Application not found.");
     }
 
     sheet.appendRow([
-      data.applicationNo || "",
-      data.name || "",
-      data.mobile || "",
-      data.whatsapp || "",
-      data.reason || "",
-      data.createdAt || new Date().toLocaleString("en-IN"),
-      "New"
+      data.applicationNo || "", data.name || "", data.mobile || "", data.whatsapp || "",
+      data.reason || "", data.createdAt || new Date().toLocaleString("en-IN"), "New"
     ]);
-    return json({ success: true, message: "Application saved successfully." });
-  } catch (error) {
-    return json({ success: false, error: String(error) });
+    return json({success:true});
+  } catch(error) {
+    return json({success:false,error:String(error)});
   }
 }
 
-function doGet() {
+function doGet(e) {
   try {
     const sheet = getSheet();
     const values = sheet.getDataRange().getValues();
     const applications = values.slice(1).map(row => ({
-      applicationNo: row[0],
-      name: row[1],
-      mobile: row[2],
-      whatsapp: row[3],
-      reason: row[4],
-      createdAt: row[5],
-      status: row[6] || "New"
+      applicationNo: row[0], name: row[1], mobile: row[2], whatsapp: row[3],
+      reason: row[4], createdAt: row[5], status: row[6] || "New"
     }));
-    return json({ success: true, applications });
-  } catch (error) {
-    return json({ success: false, error: String(error), applications: [] });
+    return json({success:true, applications}, e && e.parameter ? e.parameter.callback : "");
+  } catch(error) {
+    return json({success:false,error:String(error),applications:[]}, e && e.parameter ? e.parameter.callback : "");
   }
 }
 
-function json(data) {
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+function json(data, callback) {
+  const output = JSON.stringify(data);
+  if (callback && /^[A-Za-z_$][0-9A-Za-z_$]*$/.test(callback)) {
+    return ContentService.createTextOutput(callback + "(" + output + ");").setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(output).setMimeType(ContentService.MimeType.JSON);
 }
