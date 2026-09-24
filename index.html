@@ -61,7 +61,6 @@
         <h3>ADMIN LOGIN</h3>
         <p>Admin login करके applications और website requests manage करें।</p>
         <button class="primary" id="loginBtn2">Login to Admin Panel</button>
-        <button class="link-btn" id="registerBtn2">New Admin? Register Now</button>
       </aside>
     </section>
 
@@ -134,29 +133,11 @@
     <div class="modal-box">
       <button class="close" id="closeLogin">×</button>
       <h2>ADMIN LOGIN</h2>
-      <p>अपने registered admin account से login करें।</p>
-      <input id="username" placeholder="Username" autocomplete="username">
+      <p>Admin panel में applications देखने और manage करने के लिए login करें।</p>
+      <input id="username" placeholder="Admin ID" autocomplete="username">
       <input id="password" type="password" placeholder="Password" autocomplete="current-password">
-      <button class="primary" id="doLogin">Login</button>
-      <button class="link-btn" id="openRegister">New Admin? Register Now</button>
+      <button class="primary" id="doLogin">Login to Admin Panel</button>
       <p id="loginError" class="error"></p>
-    </div>
-  </div>
-
-  <div id="registerModal" class="modal">
-    <div class="modal-box">
-      <button class="close" id="closeRegister">×</button>
-      <h2>ADMIN REGISTRATION</h2>
-      <p>Admin ID और Password बनाकर website के admin panel में login करें.</p>
-      <input id="regName" placeholder="Admin Name" autocomplete="name">
-      <input id="regMobile" inputmode="numeric" maxlength="10" placeholder="10-digit Mobile Number" autocomplete="tel">
-      <input id="regUsername" placeholder="Create Admin ID" autocomplete="username">
-      <input id="regPassword" type="password" placeholder="Create Admin Password (minimum 6 characters)" autocomplete="new-password">
-      <input id="regConfirmPassword" type="password" placeholder="Confirm Admin Password" autocomplete="new-password">
-      <button class="primary" id="doRegister">Create Admin Account</button>
-      <button class="link-btn" id="backToLogin">Already registered? Admin Login</button>
-      <p id="registerError" class="error"></p>
-      <p id="registerSuccess" class="success"></p>
     </div>
   </div>
 
@@ -167,23 +148,33 @@
       <div class="user-welcome">
         <div class="user-avatar">🛡️</div>
         <h3 id="userWelcomeName">Welcome, Admin</h3>
-        <p>Admin is successfully logged in.</p>
+        <p>Customer applications are shown below.</p>
       </div>
       <div class="user-details">
         <p><b>Admin ID:</b> <span id="userDashUsername"></span></p>
-        <p><b>Mobile:</b> <span id="userDashMobile"></span></p>
       </div>
-      <div class="admin-stats">
-        <div><strong id="adminTotalApplications">0</strong><small>Total Applications</small></div>
+      <div class="admin-stats admin-stat-grid">
+        <div><strong id="adminTotalApplications">0</strong><small>Total</small></div>
+        <div><strong id="adminNewApplications">0</strong><small>New</small></div>
+        <div><strong id="adminProcessingApplications">0</strong><small>Processing</small></div>
+        <div><strong id="adminCompletedApplications">0</strong><small>Completed</small></div>
+      </div>
+      <div class="admin-toolbar">
+        <input id="adminSearch" class="admin-search" placeholder="Search name, mobile, application no...">
+        <select id="adminStatusFilter" class="admin-filter">
+          <option value="All">All Status</option>
+          <option value="New">New</option>
+          <option value="Processing">Processing</option>
+          <option value="Completed">Completed</option>
+        </select>
       </div>
       <div class="admin-actions">
-        <button class="primary" id="viewApplications">View Applications</button>
+        <button class="primary" id="refreshApplications">Refresh Applications</button>
         <button class="secondary" id="userLogout">Logout</button>
       </div>
-      <div id="adminApplications" class="admin-applications"></div>
+      <div id="adminApplications" class="admin-applications"><div class="admin-empty">Loading applications...</div></div>
     </div>
   </div>
-
 
   <!-- APPLY NOW MODAL -->
   <div id="applyModal" class="modal">
