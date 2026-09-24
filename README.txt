@@ -1,30 +1,28 @@
-DIKSHA COMPUTER CENTER BALAM MADHEPURA - FINAL CORRECTED PACKAGE
+DIKSHA COMPUTER CENTER BALAM MADHEPURA - WEBSITE PACKAGE
 
-This package preserves the existing logo, proprietor photo, verification file and website structure.
+All visible website text is in English.
 
-ADMIN LOGIN
-Admin ID: 8405877507
-Password: Diksha@197781
-There is NO New Admin / Register option.
-After login the Admin Panel loads applications automatically.
+This package includes:
+- Modern responsive website
+- DIKSHA logo and Santosh Mukhiya photo
+- Services, courses, gallery, reviews and contact sections
+- User Login button
+- Demo Admin Notification Panel
+- Notifications displayed on the public homepage
 
-ADMIN FEATURES
-- All applications from Google Sheet
-- Search and status filter
-- New / Processing / Completed status
-- Print and Delete
-- Refresh and application counters
+DEMO LOGIN:
+Username: admin
+Password: change-me
 
-APPLY NOW
-- Form opens from the Apply Now navigation button
-- Submission is sent to Google Apps Script using a cross-origin-safe HTML form
-- Receipt is generated after submission
+IMPORTANT:
+This login/notification system uses browser localStorage and is suitable only as a demo/prototype.
+For a real public website where notifications can be published from any device and login credentials are secure,
+a server/database backend is required (for example PHP + MySQL, Node.js + database, or Firebase/Supabase).
+Do not use the demo password on a live public website.
 
-IMPORTANT GOOGLE APPS SCRIPT
-1. Copy GOOGLE_APPS_SCRIPT_UPDATED.txt into your Google Apps Script project.
-2. Deploy as Web app. Execute as the script owner and allow access required for your site (typically Anyone).
-3. Deploy a NEW VERSION after code changes.
-4. Keep the same Sheet ID in the script.
-5. The website uses the Apps Script URL already present in script.js. If your deployed URL is different, replace GOOGLE_SCRIPT_URL in script.js with the current /exec URL.
-
-IMPORTANT: Admin credentials are client-side and are not a server-secure authentication system.
+To test:
+1. Open index.html in a browser.
+2. Click User Login.
+3. Use the demo credentials above.
+4. Publish a notification.
+5. The notification appears in Latest Notifications.

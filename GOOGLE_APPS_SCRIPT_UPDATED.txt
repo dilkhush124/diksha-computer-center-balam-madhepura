@@ -1,6 +1,70 @@
 const SHEET_ID = "1wzhN9IlL6e_SsrRJh8g_Z1-9vq-pUBQgMNDcUYrHUd8";
 const SHEET_NAME = "Applications";
-function getSheet(){const ss=SpreadsheetApp.openById(SHEET_ID);let sh=ss.getSheetByName(SHEET_NAME);if(!sh)sh=ss.insertSheet(SHEET_NAME);if(sh.getLastRow()===0)sh.appendRow(["Application No","Name","Mobile","WhatsApp","Apply For","Date & Time","Status"]);else if(sh.getLastColumn()<7){sh.getRange(1,7).setValue("Status");if(sh.getLastRow()>1)sh.getRange(2,7,sh.getLastRow()-1,1).setValue("New")}return sh}
-function doPost(e){try{const d=e&&e.parameter||{},sh=getSheet();if(d.action==="delete"){const no=String(d.applicationNo||"").trim(),v=sh.getDataRange().getValues();for(let i=v.length-1;i>=1;i--)if(String(v[i][0])===no){sh.deleteRow(i+1);return json({success:true})}throw new Error("Application not found.")}if(d.action==="status"){const no=String(d.applicationNo||"").trim(),st=String(d.status||"New").trim();if(["New","Processing","Completed"].indexOf(st)<0)throw new Error("Invalid status.");const v=sh.getDataRange().getValues();for(let i=1;i<v.length;i++)if(String(v[i][0])===no){sh.getRange(i+1,7).setValue(st);return json({success:true})}throw new Error("Application not found.")}sh.appendRow([d.applicationNo||"",d.name||"",d.mobile||"",d.whatsapp||"",d.reason||"",d.createdAt||new Date().toLocaleString("en-IN"),"New"]);return json({success:true})}catch(err){return json({success:false,error:String(err)})}}
-function doGet(e){try{const sh=getSheet(),v=sh.getDataRange().getValues(),apps=v.slice(1).map(r=>({applicationNo:r[0],name:r[1],mobile:r[2],whatsapp:r[3],reason:r[4],createdAt:r[5],status:r[6]||"New"}));return json({success:true,applications:apps},e&&e.parameter&&e.parameter.callback)}catch(err){return json({success:false,error:String(err),applications:[]},e&&e.parameter&&e.parameter.callback)}}
-function json(data,callback){const out=JSON.stringify(data);if(callback&&/^[A-Za-z_$][0-9A-Za-z_$]*$/.test(callback))return ContentService.createTextOutput(callback+"("+out+");").setMimeType(ContentService.MimeType.JAVASCRIPT);return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JSON)}
+
+function getSheet() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Application No", "Name", "Mobile", "WhatsApp", "Apply For", "Date & Time"]);
+  }
+  return sheet;
+}
+
+function doPost(e) {
+  try {
+    const data = e.parameter || {};
+    const sheet = getSheet();
+
+    if (data.action === "delete") {
+      const applicationNo = String(data.applicationNo || "").trim();
+      if (!applicationNo) throw new Error("Application number is required.");
+
+      const values = sheet.getDataRange().getValues();
+      for (let i = values.length - 1; i >= 1; i--) {
+        if (String(values[i][0]) === applicationNo) {
+          sheet.deleteRow(i + 1);
+          return json({ success: true, message: "Application deleted." });
+        }
+      }
+      throw new Error("Application not found.");
+    }
+
+    sheet.appendRow([
+      data.applicationNo || "",
+      data.name || "",
+      data.mobile || "",
+      data.whatsapp || "",
+      data.reason || "",
+      data.createdAt || new Date().toLocaleString("en-IN")
+    ]);
+
+    return json({ success: true, message: "Application saved successfully." });
+  } catch (error) {
+    return json({ success: false, error: String(error) });
+  }
+}
+
+function doGet() {
+  try {
+    const sheet = getSheet();
+    const values = sheet.getDataRange().getValues();
+    const applications = values.slice(1).map(row => ({
+      applicationNo: row[0],
+      name: row[1],
+      mobile: row[2],
+      whatsapp: row[3],
+      reason: row[4],
+      createdAt: row[5]
+    }));
+    return json({ success: true, applications });
+  } catch (error) {
+    return json({ success: false, error: String(error), applications: [] });
+  }
+}
+
+function json(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}

@@ -61,6 +61,7 @@
         <h3>ADMIN LOGIN</h3>
         <p>Admin login करके applications और website requests manage करें।</p>
         <button class="primary" id="loginBtn2">Login to Admin Panel</button>
+        <button class="link-btn" id="registerBtn2">New Admin? Register Now</button>
       </aside>
     </section>
 
@@ -142,6 +143,23 @@
     </div>
   </div>
 
+  <div id="registerModal" class="modal">
+    <div class="modal-box">
+      <button class="close" id="closeRegister">×</button>
+      <h2>ADMIN REGISTRATION</h2>
+      <p>Admin ID और Password बनाकर website के admin panel में login करें.</p>
+      <input id="regName" placeholder="Admin Name" autocomplete="name">
+      <input id="regMobile" inputmode="numeric" maxlength="10" placeholder="10-digit Mobile Number" autocomplete="tel">
+      <input id="regUsername" placeholder="Create Admin ID" autocomplete="username">
+      <input id="regPassword" type="password" placeholder="Create Admin Password (minimum 6 characters)" autocomplete="new-password">
+      <input id="regConfirmPassword" type="password" placeholder="Confirm Admin Password" autocomplete="new-password">
+      <button class="primary" id="doRegister">Create Admin Account</button>
+      <button class="link-btn" id="backToLogin">Already registered? Admin Login</button>
+      <p id="registerError" class="error"></p>
+      <p id="registerSuccess" class="success"></p>
+    </div>
+  </div>
+
   <div id="userModal" class="modal">
     <div class="modal-box admin-panel-box">
       <button class="close" id="closeUser">×</button>
@@ -156,19 +174,11 @@
         <p><b>Mobile:</b> <span id="userDashMobile"></span></p>
       </div>
       <div class="admin-stats">
-        <div><strong id="adminTotalApplications">0</strong><small>Total</small></div>
-        <div><strong id="adminNewApplications">0</strong><small>New</small></div>
-        <div><strong id="adminProcessingApplications">0</strong><small>Processing</small></div>
-        <div><strong id="adminCompletedApplications">0</strong><small>Completed</small></div>
+        <div><strong id="adminTotalApplications">0</strong><small>Total Applications</small></div>
       </div>
       <div class="admin-actions">
         <button class="primary" id="viewApplications">View Applications</button>
-        <button class="secondary" id="refreshApplications">↻ Refresh</button>
         <button class="secondary" id="userLogout">Logout</button>
-      </div>
-      <div class="application-tools">
-        <input id="applicationSearch" placeholder="Search name, mobile, WhatsApp or application no.">
-        <select id="applicationStatusFilter"><option value="">All Status</option><option>New</option><option>Processing</option><option>Completed</option></select>
       </div>
       <div id="adminApplications" class="admin-applications"></div>
     </div>
