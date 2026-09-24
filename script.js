@@ -4,111 +4,45 @@ const loginModal = document.getElementById("loginModal");
 const registerModal = document.getElementById("registerModal");
 const userModal = document.getElementById("userModal");
 
-const ADMINS_KEY = "diksha_admins_v1";
-const APPLICATIONS_KEY = "diksha_applications_v1";
-
-function getAdmins(){
-  try { return JSON.parse(localStorage.getItem(ADMINS_KEY) || "[]"); }
-  catch { return []; }
-}
-function saveAdmins(admins){ localStorage.setItem(ADMINS_KEY, JSON.stringify(admins)); }
-function encodePassword(password){
-  return btoa(unescape(encodeURIComponent(password)));
-}
+const ADMIN_ID = "8405877507";
+const ADMIN_PASSWORD = "Diksha@197781";
 
 function openLogin(){
-  registerModal.classList.remove("show");
   loginModal.classList.add("show");
   document.getElementById("loginError").textContent = "";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
   document.getElementById("username").focus();
-}
-function openRegister(){
-  loginModal.classList.remove("show");
-  registerModal.classList.add("show");
-  document.getElementById("registerError").textContent = "";
-  document.getElementById("registerSuccess").textContent = "";
 }
 
 document.getElementById("loginBtn").onclick = openLogin;
 document.getElementById("loginBtn2").onclick = openLogin;
-document.getElementById("registerBtn2").onclick = openRegister;
-document.getElementById("openRegister").onclick = openRegister;
-document.getElementById("backToLogin").onclick = openLogin;
 document.getElementById("closeLogin").onclick = () => loginModal.classList.remove("show");
-document.getElementById("closeRegister").onclick = () => registerModal.classList.remove("show");
 document.getElementById("closeUser").onclick = () => userModal.classList.remove("show");
 document.getElementById("userLogout").onclick = () => {
   userModal.classList.remove("show");
   document.getElementById("adminApplications").innerHTML = "";
 };
 
-document.getElementById("doRegister").onclick = () => {
-  const name = document.getElementById("regName").value.trim();
-  const mobile = document.getElementById("regMobile").value.replace(/\D/g, "");
-  const username = document.getElementById("regUsername").value.trim().toLowerCase();
-  const password = document.getElementById("regPassword").value;
-  const confirmPassword = document.getElementById("regConfirmPassword").value;
-  const error = document.getElementById("registerError");
-  const success = document.getElementById("registerSuccess");
-  error.textContent = "";
-  success.textContent = "";
-
-  if(name.length < 2){ error.textContent = "Please enter the admin name."; return; }
-  if(!/^\d{10}$/.test(mobile)){ error.textContent = "Please enter a valid 10-digit mobile number."; return; }
-  if(!/^[a-z0-9._-]{4,20}$/.test(username)){
-    error.textContent = "Admin ID must be 4-20 characters: a-z, 0-9, dot, underscore or hyphen.";
-    return;
-  }
-  if(password.length < 6){ error.textContent = "Admin password must be at least 6 characters."; return; }
-  if(password !== confirmPassword){ error.textContent = "Both passwords do not match."; return; }
-
-  const admins = getAdmins();
-  if(admins.some(a => a.username === username)){
-    error.textContent = "This Admin ID is already registered.";
-    return;
-  }
-
-  admins.push({
-    name, mobile, username,
-    password: encodePassword(password),
-    registeredAt: new Date().toLocaleString("en-IN")
-  });
-  saveAdmins(admins);
-
-  success.textContent = "Admin registration successful! Please login.";
-  document.getElementById("regPassword").value = "";
-  document.getElementById("regConfirmPassword").value = "";
-  setTimeout(() => {
-    registerModal.classList.remove("show");
-    document.getElementById("username").value = username;
-    document.getElementById("password").value = "";
-    loginModal.classList.add("show");
-  }, 700);
-};
-
-document.getElementById("doLogin").onclick = () => {
-  const username = document.getElementById("username").value.trim().toLowerCase();
+document.getElementById("doLogin").onclick = async () => {
+  const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value;
   const error = document.getElementById("loginError");
   error.textContent = "";
 
-  const admin = getAdmins().find(a =>
-    a.username === username && a.password === encodePassword(password)
-  );
-
-  if(!admin){
-    error.textContent = "Admin ID or Password is incorrect. Please register first.";
+  if(username !== ADMIN_ID || password !== ADMIN_PASSWORD){
+    error.textContent = "Admin ID or Password is incorrect.";
     return;
   }
 
   loginModal.classList.remove("show");
-  document.getElementById("userWelcomeName").textContent = `Welcome, ${admin.name}`;
-  document.getElementById("userDashUsername").textContent = admin.username;
-  document.getElementById("userDashMobile").textContent = admin.mobile;
+  document.getElementById("userWelcomeName").textContent = "Welcome, Admin";
+  document.getElementById("userDashUsername").textContent = ADMIN_ID;
+  document.getElementById("userDashMobile").textContent = ADMIN_ID;
   userModal.classList.add("show");
   document.getElementById("password").value = "";
-  updateAdminStats();
-  document.getElementById("adminApplications").innerHTML = '<div class="admin-empty">Click View Applications to load applications.</div>';
+  document.getElementById("adminApplications").innerHTML = '<div class="admin-empty">Loading applications...</div>';
+  await renderApplications();
 };
 
 function getApplications(){
@@ -263,7 +197,7 @@ document.getElementById("refreshApplications").onclick = renderApplications;
 document.getElementById("applicationSearch").addEventListener("input", renderApplications);
 document.getElementById("applicationStatusFilter").addEventListener("change", renderApplications);
 
-[loginModal, registerModal, userModal].forEach(modal => {
+[loginModal, userModal].forEach(modal => {
   modal.addEventListener("click", e => {
     if(e.target === modal) modal.classList.remove("show");
   });
