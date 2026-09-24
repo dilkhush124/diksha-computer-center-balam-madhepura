@@ -1,20 +1,30 @@
-DIKSHA COMPUTER CENTER BALAM MADHEPURA - UPDATED WEBSITE PACKAGE
+DIKSHA COMPUTER CENTER BALAM MADHEPURA - FINAL CORRECTED PACKAGE
 
-This package keeps the existing logo/photo and adds an improved Apply Now + Admin application workflow.
+This package preserves the existing logo, proprietor photo, verification file and website structure.
 
-NEW ADMIN FEATURES:
-- View applications from Google Sheets
-- Search by name, mobile, WhatsApp or application number
-- Filter by status: New / Processing / Completed
-- Change application status and save it to Google Sheets
-- Print an individual application
-- Refresh applications
-- Delete an application from Google Sheets
-- Application receipt remains printable
+ADMIN LOGIN
+Admin ID: 8405877507
+Password: Diksha@197781
+There is NO New Admin / Register option.
+After login the Admin Panel loads applications automatically.
 
-IMPORTANT:
-1. Replace the website files in GitHub with the files from this package.
-2. The Google Apps Script MUST also be updated using GOOGLE_APPS_SCRIPT_UPDATED.txt.
-3. After updating Apps Script, deploy a NEW VERSION of the Web App and keep access set to Anyone as required by the website.
-4. Use the same Google Sheet ID already present in the script.
-5. The current admin login is still browser-localStorage based; it is not a secure server-side login.
+ADMIN FEATURES
+- All applications from Google Sheet
+- Search and status filter
+- New / Processing / Completed status
+- Print and Delete
+- Refresh and application counters
+
+APPLY NOW
+- Form opens from the Apply Now navigation button
+- Submission is sent to Google Apps Script using a cross-origin-safe HTML form
+- Receipt is generated after submission
+
+IMPORTANT GOOGLE APPS SCRIPT
+1. Copy GOOGLE_APPS_SCRIPT_UPDATED.txt into your Google Apps Script project.
+2. Deploy as Web app. Execute as the script owner and allow access required for your site (typically Anyone).
+3. Deploy a NEW VERSION after code changes.
+4. Keep the same Sheet ID in the script.
+5. The website uses the Apps Script URL already present in script.js. If your deployed URL is different, replace GOOGLE_SCRIPT_URL in script.js with the current /exec URL.
+
+IMPORTANT: Admin credentials are client-side and are not a server-secure authentication system.
