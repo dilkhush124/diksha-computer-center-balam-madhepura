@@ -6,7 +6,11 @@ function getSheet() {
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["Application No", "Name", "Mobile", "WhatsApp", "Apply For", "Date & Time"]);
+    sheet.appendRow(["Application No", "Name", "Mobile", "WhatsApp", "Apply For", "Date & Time", "Status"]);
+  } else if (sheet.getLastColumn() < 7) {
+    sheet.getRange(1, 7).setValue("Status");
+    const rows = sheet.getLastRow();
+    if (rows > 1) sheet.getRange(2, 7, rows - 1, 1).setValue("New");
   }
   return sheet;
 }
@@ -19,12 +23,26 @@ function doPost(e) {
     if (data.action === "delete") {
       const applicationNo = String(data.applicationNo || "").trim();
       if (!applicationNo) throw new Error("Application number is required.");
-
       const values = sheet.getDataRange().getValues();
       for (let i = values.length - 1; i >= 1; i--) {
         if (String(values[i][0]) === applicationNo) {
           sheet.deleteRow(i + 1);
           return json({ success: true, message: "Application deleted." });
+        }
+      }
+      throw new Error("Application not found.");
+    }
+
+    if (data.action === "status") {
+      const applicationNo = String(data.applicationNo || "").trim();
+      const status = String(data.status || "New").trim();
+      if (!applicationNo) throw new Error("Application number is required.");
+      if (["New", "Processing", "Completed"].indexOf(status) === -1) throw new Error("Invalid status.");
+      const values = sheet.getDataRange().getValues();
+      for (let i = 1; i < values.length; i++) {
+        if (String(values[i][0]) === applicationNo) {
+          sheet.getRange(i + 1, 7).setValue(status);
+          return json({ success: true, message: "Status updated." });
         }
       }
       throw new Error("Application not found.");
@@ -36,9 +54,9 @@ function doPost(e) {
       data.mobile || "",
       data.whatsapp || "",
       data.reason || "",
-      data.createdAt || new Date().toLocaleString("en-IN")
+      data.createdAt || new Date().toLocaleString("en-IN"),
+      "New"
     ]);
-
     return json({ success: true, message: "Application saved successfully." });
   } catch (error) {
     return json({ success: false, error: String(error) });
@@ -55,7 +73,8 @@ function doGet() {
       mobile: row[2],
       whatsapp: row[3],
       reason: row[4],
-      createdAt: row[5]
+      createdAt: row[5],
+      status: row[6] || "New"
     }));
     return json({ success: true, applications });
   } catch (error) {

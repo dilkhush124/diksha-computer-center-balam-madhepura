@@ -74,3 +74,5 @@
   .admin-actions .primary,.admin-actions .secondary{width:100%}
   .admin-item small{float:none;display:block;margin-top:3px}
 }
+
+.application-tools{display:grid;grid-template-columns:1fr 180px;gap:10px;margin-top:14px}.application-tools input,.application-tools select{width:100%;padding:12px;border:1px solid #ccd6e2;border-radius:9px;font:inherit;background:#fff}.admin-row-actions{display:flex;gap:8px;align-items:center;margin-top:10px}.status-select{padding:8px;border:1px solid #ccd6e2;border-radius:8px;background:#fff;font-weight:700}.admin-row-actions .secondary{padding:8px 12px}.result-count{float:right;color:#607080;font-size:12px;font-weight:600}@media(max-width:700px){.application-tools{grid-template-columns:1fr}.admin-row-actions{flex-wrap:wrap}.status-select{width:100%}}

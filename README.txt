@@ -1,28 +1,20 @@
-DIKSHA COMPUTER CENTER BALAM MADHEPURA - WEBSITE PACKAGE
+DIKSHA COMPUTER CENTER BALAM MADHEPURA - UPDATED WEBSITE PACKAGE
 
-All visible website text is in English.
+This package keeps the existing logo/photo and adds an improved Apply Now + Admin application workflow.
 
-This package includes:
-- Modern responsive website
-- DIKSHA logo and Santosh Mukhiya photo
-- Services, courses, gallery, reviews and contact sections
-- User Login button
-- Demo Admin Notification Panel
-- Notifications displayed on the public homepage
-
-DEMO LOGIN:
-Username: admin
-Password: change-me
+NEW ADMIN FEATURES:
+- View applications from Google Sheets
+- Search by name, mobile, WhatsApp or application number
+- Filter by status: New / Processing / Completed
+- Change application status and save it to Google Sheets
+- Print an individual application
+- Refresh applications
+- Delete an application from Google Sheets
+- Application receipt remains printable
 
 IMPORTANT:
-This login/notification system uses browser localStorage and is suitable only as a demo/prototype.
-For a real public website where notifications can be published from any device and login credentials are secure,
-a server/database backend is required (for example PHP + MySQL, Node.js + database, or Firebase/Supabase).
-Do not use the demo password on a live public website.
-
-To test:
-1. Open index.html in a browser.
-2. Click User Login.
-3. Use the demo credentials above.
-4. Publish a notification.
-5. The notification appears in Latest Notifications.
+1. Replace the website files in GitHub with the files from this package.
+2. The Google Apps Script MUST also be updated using GOOGLE_APPS_SCRIPT_UPDATED.txt.
+3. After updating Apps Script, deploy a NEW VERSION of the Web App and keep access set to Anyone as required by the website.
+4. Use the same Google Sheet ID already present in the script.
+5. The current admin login is still browser-localStorage based; it is not a secure server-side login.

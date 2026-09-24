@@ -174,11 +174,19 @@
         <p><b>Mobile:</b> <span id="userDashMobile"></span></p>
       </div>
       <div class="admin-stats">
-        <div><strong id="adminTotalApplications">0</strong><small>Total Applications</small></div>
+        <div><strong id="adminTotalApplications">0</strong><small>Total</small></div>
+        <div><strong id="adminNewApplications">0</strong><small>New</small></div>
+        <div><strong id="adminProcessingApplications">0</strong><small>Processing</small></div>
+        <div><strong id="adminCompletedApplications">0</strong><small>Completed</small></div>
       </div>
       <div class="admin-actions">
         <button class="primary" id="viewApplications">View Applications</button>
+        <button class="secondary" id="refreshApplications">↻ Refresh</button>
         <button class="secondary" id="userLogout">Logout</button>
+      </div>
+      <div class="application-tools">
+        <input id="applicationSearch" placeholder="Search name, mobile, WhatsApp or application no.">
+        <select id="applicationStatusFilter"><option value="">All Status</option><option>New</option><option>Processing</option><option>Completed</option></select>
       </div>
       <div id="adminApplications" class="admin-applications"></div>
     </div>
