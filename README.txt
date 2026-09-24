@@ -1,39 +1,28 @@
-DIKSHA COMPUTER CENTER BALAM MADHEPURA - FINAL ADMIN + APPLY NOW PACKAGE
+DIKSHA COMPUTER CENTER BALAM MADHEPURA - WEBSITE PACKAGE
 
-Admin Login
-Admin ID: 8405877507
-Password: Diksha@197781
+All visible website text is in English.
 
-There is no Admin Registration option.
-After successful login, the Admin Panel loads customer applications automatically.
+This package includes:
+- Modern responsive website
+- DIKSHA logo and Santosh Mukhiya photo
+- Services, courses, gallery, reviews and contact sections
+- User Login button
+- Demo Admin Notification Panel
+- Notifications displayed on the public homepage
 
-Admin Panel features:
-- Total / New / Processing / Completed counts
-- Search by application number, name, mobile, WhatsApp or service
-- Status change: New / Processing / Completed
-- Print individual application
-- Delete application from Google Sheet
-- Refresh applications
+DEMO LOGIN:
+Username: admin
+Password: change-me
 
-Apply Now features:
-- Customer Name
-- Mobile Number
-- WhatsApp Number
-- Visit/Application purpose
-- Application number
-- Printable receipt
-- Saves application to Google Sheet
+IMPORTANT:
+This login/notification system uses browser localStorage and is suitable only as a demo/prototype.
+For a real public website where notifications can be published from any device and login credentials are secure,
+a server/database backend is required (for example PHP + MySQL, Node.js + database, or Firebase/Supabase).
+Do not use the demo password on a live public website.
 
-IMPORTANT GOOGLE APPS SCRIPT SETUP
-1. Open the Google Apps Script project connected to your Applications sheet.
-2. Replace its code with GOOGLE_APPS_SCRIPT_UPDATED.txt from this package.
-3. Deploy > Manage deployments > Edit the Web app deployment.
-4. Create/select a new version and deploy.
-5. Execute as: Me
-6. Who has access: Anyone
-7. Keep the Web app URL the same if possible. If a new URL is created, update GOOGLE_SCRIPT_URL in script.js.
-
-The public GitHub site uses JSONP GET requests to the Apps Script so that Apply Now and Admin applications work across browsers without the common Apps Script CORS/redirect fetch problem.
-
-SECURITY NOTE
-This is a static GitHub website, so the requested Admin ID/password are present in the browser JavaScript. This is suitable for the requested simple admin gate, but it is NOT a high-security authentication system. For strong security, use a server-side authentication/database system.
+To test:
+1. Open index.html in a browser.
+2. Click User Login.
+3. Use the demo credentials above.
+4. Publish a notification.
+5. The notification appears in Latest Notifications.
