@@ -1,3 +1,5 @@
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlB-XvmuGM7DWDqHtLIhrkeXlEwJ3iabaELeyf4MVcv9UgMFlLxgg9oqgwhtRgb3P5FQ/exec";
+
 const loginModal = document.getElementById("loginModal");
 const registerModal = document.getElementById("registerModal");
 const userModal = document.getElementById("userModal");
@@ -106,7 +108,7 @@ document.getElementById("doLogin").onclick = () => {
   userModal.classList.add("show");
   document.getElementById("password").value = "";
   updateAdminStats();
-  document.getElementById("adminApplications").innerHTML = "";
+  document.getElementById("adminApplications").innerHTML = '<div class="admin-empty">Click View Applications to load applications.</div>';
 };
 
 function getApplications(){
@@ -123,47 +125,79 @@ function createApplicationNumber(){
     String(now.getMonth()+1).padStart(2,"0"),
     String(now.getDate()).padStart(2,"0")
   ].join("");
-  const apps = getApplications();
-  const serial = String(apps.length + 1).padStart(3,"0");
-  return `DCC-${datePart}-${serial}`;
+  const timePart = String(now.getTime()).slice(-6);
+  const randomPart = Math.floor(100 + Math.random() * 900);
+  return `DCC-${datePart}-${timePart}-${randomPart}`;
 }
 
-function updateAdminStats(){
-  document.getElementById("adminTotalApplications").textContent = getApplications().length;
+async function fetchApplicationsFromGoogle(){
+  const response = await fetch(GOOGLE_SCRIPT_URL, { method: "GET", cache: "no-store" });
+  if(!response.ok) throw new Error("Could not connect to Google Sheets.");
+  const result = await response.json();
+  if(!result.success) throw new Error(result.error || "Google Sheets error.");
+  return Array.isArray(result.applications) ? result.applications : [];
 }
 
-function renderApplications(){
+function updateAdminStats(count){
+  document.getElementById("adminTotalApplications").textContent = String(
+    typeof count === "number" ? count : getApplications().length
+  );
+}
+
+async function renderApplications(){
   const box = document.getElementById("adminApplications");
-  const apps = getApplications();
-  updateAdminStats();
+  box.innerHTML = '<div class="admin-empty">Loading applications...</div>';
 
-  if(!apps.length){
-    box.innerHTML = '<div class="admin-empty">No applications received yet.</div>';
-    return;
+  try {
+    const apps = await fetchApplicationsFromGoogle();
+    saveApplications(apps);
+    updateAdminStats(apps.length);
+
+    if(!apps.length){
+      box.innerHTML = '<div class="admin-empty">No applications received yet.</div>';
+      return;
+    }
+
+    box.innerHTML = '<h3>APPLICATIONS</h3>' + apps.slice().reverse().map((app) => `
+      <div class="admin-item">
+        <div><b>${escapeHtml(app.applicationNo)}</b> <small>${escapeHtml(app.createdAt)}</small></div>
+        <p><b>Name:</b> ${escapeHtml(app.name)}</p>
+        <p><b>Mobile:</b> ${escapeHtml(app.mobile)} &nbsp; <b>WhatsApp:</b> ${escapeHtml(app.whatsapp)}</p>
+        <p><b>Apply For:</b> ${escapeHtml(app.reason)}</p>
+        <button class="secondary delete-app" data-app-no="${escapeHtml(app.applicationNo)}">Delete</button>
+      </div>
+    `).join("");
+
+    box.querySelectorAll(".delete-app").forEach(btn => {
+      btn.onclick = async () => {
+        const applicationNo = btn.dataset.appNo;
+        if(!confirm("Delete this application from Google Sheet?")) return;
+
+        btn.disabled = true;
+        btn.textContent = "Deleting...";
+        try {
+          const body = new URLSearchParams({ action: "delete", applicationNo });
+          const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+            body
+          });
+          const result = await response.json();
+          if(!result.success) throw new Error(result.error || "Delete failed.");
+          await renderApplications();
+        } catch (error) {
+          alert("Delete failed: " + error.message);
+          btn.disabled = false;
+          btn.textContent = "Delete";
+        }
+      };
+    });
+  } catch (error) {
+    updateAdminStats();
+    box.innerHTML = `<div class="admin-empty">Could not load applications from Google Sheets.<br>${escapeHtml(error.message)}</div>`;
   }
-
-  box.innerHTML = '<h3>APPLICATIONS</h3>' + apps.slice().reverse().map((app, reverseIndex) => `
-    <div class="admin-item">
-      <div><b>${escapeHtml(app.applicationNo)}</b> <small>${escapeHtml(app.createdAt)}</small></div>
-      <p><b>Name:</b> ${escapeHtml(app.name)}</p>
-      <p><b>Mobile:</b> ${escapeHtml(app.mobile)} &nbsp; <b>WhatsApp:</b> ${escapeHtml(app.whatsapp)}</p>
-      <p><b>Apply For:</b> ${escapeHtml(app.reason)}</p>
-      <button class="secondary delete-app" data-index="${apps.length - 1 - reverseIndex}">Delete</button>
-    </div>
-  `).join("");
-
-  box.querySelectorAll(".delete-app").forEach(btn => {
-    btn.onclick = () => {
-      const index = Number(btn.dataset.index);
-      const current = getApplications();
-      if(confirm("Delete this application?")){
-        current.splice(index, 1);
-        saveApplications(current);
-        renderApplications();
-      }
-    };
-  });
 }
+
 function escapeHtml(value){
   return String(value ?? "").replace(/[&<>"']/g, ch => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
@@ -176,7 +210,6 @@ document.getElementById("viewApplications").onclick = renderApplications;
     if(e.target === modal) modal.classList.remove("show");
   });
 });
-
 
 /* APPLY NOW + RECEIPT SYSTEM */
 const applyModal = document.getElementById("applyModal");
@@ -205,7 +238,7 @@ applyReason.addEventListener("change", () => {
   if(!isOther) applyOtherReason.value = "";
 });
 
-applyForm.addEventListener("submit", e => {
+applyForm.addEventListener("submit", async e => {
   e.preventDefault();
 
   const name = document.getElementById("applyName").value.trim();
@@ -214,6 +247,7 @@ applyForm.addEventListener("submit", e => {
   const selectedReason = applyReason.value;
   const reason = selectedReason === "Other" ? applyOtherReason.value.trim() : selectedReason;
   const error = document.getElementById("applyError");
+  const submitButton = applyForm.querySelector('button[type="submit"]');
   error.textContent = "";
 
   if(name.length < 2){ error.textContent = "Please enter your full name."; return; }
@@ -227,19 +261,42 @@ applyForm.addEventListener("submit", e => {
     createdAt: new Date().toLocaleString("en-IN")
   };
 
-  const applications = getApplications();
-  applications.push(application);
-  saveApplications(applications);
+  submitButton.disabled = true;
+  const oldButtonText = submitButton.textContent;
+  submitButton.textContent = "Submitting...";
 
-  document.getElementById("receiptNo").textContent = application.applicationNo;
-  document.getElementById("receiptName").textContent = application.name;
-  document.getElementById("receiptMobile").textContent = application.mobile;
-  document.getElementById("receiptWhatsapp").textContent = application.whatsapp;
-  document.getElementById("receiptReason").textContent = application.reason;
-  document.getElementById("receiptDate").textContent = application.createdAt;
+  try {
+    const body = new URLSearchParams(application);
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body
+    });
 
-  applyModal.classList.remove("show");
-  receiptModal.classList.add("show");
+    const result = await response.json();
+    if(!result.success) throw new Error(result.error || "Application could not be saved.");
+
+    // Keep a local copy too, for offline/receipt continuity.
+    const applications = getApplications();
+    applications.push(application);
+    saveApplications(applications);
+
+    document.getElementById("receiptNo").textContent = application.applicationNo;
+    document.getElementById("receiptName").textContent = application.name;
+    document.getElementById("receiptMobile").textContent = application.mobile;
+    document.getElementById("receiptWhatsapp").textContent = application.whatsapp;
+    document.getElementById("receiptReason").textContent = application.reason;
+    document.getElementById("receiptDate").textContent = application.createdAt;
+
+    applyModal.classList.remove("show");
+    receiptModal.classList.add("show");
+  } catch (err) {
+    error.textContent = "Application submit nahi ho paya. Internet/Google connection check karke dobara try karein.";
+    console.error(err);
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = oldButtonText;
+  }
 });
 
 document.getElementById("printReceipt").onclick = () => window.print();

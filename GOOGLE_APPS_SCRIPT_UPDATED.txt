@@ -1,0 +1,70 @@
+const SHEET_ID = "1wzhN9IlL6e_SsrRJh8g_Z1-9vq-pUBQgMNDcUYrHUd8";
+const SHEET_NAME = "Applications";
+
+function getSheet() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Application No", "Name", "Mobile", "WhatsApp", "Apply For", "Date & Time"]);
+  }
+  return sheet;
+}
+
+function doPost(e) {
+  try {
+    const data = e.parameter || {};
+    const sheet = getSheet();
+
+    if (data.action === "delete") {
+      const applicationNo = String(data.applicationNo || "").trim();
+      if (!applicationNo) throw new Error("Application number is required.");
+
+      const values = sheet.getDataRange().getValues();
+      for (let i = values.length - 1; i >= 1; i--) {
+        if (String(values[i][0]) === applicationNo) {
+          sheet.deleteRow(i + 1);
+          return json({ success: true, message: "Application deleted." });
+        }
+      }
+      throw new Error("Application not found.");
+    }
+
+    sheet.appendRow([
+      data.applicationNo || "",
+      data.name || "",
+      data.mobile || "",
+      data.whatsapp || "",
+      data.reason || "",
+      data.createdAt || new Date().toLocaleString("en-IN")
+    ]);
+
+    return json({ success: true, message: "Application saved successfully." });
+  } catch (error) {
+    return json({ success: false, error: String(error) });
+  }
+}
+
+function doGet() {
+  try {
+    const sheet = getSheet();
+    const values = sheet.getDataRange().getValues();
+    const applications = values.slice(1).map(row => ({
+      applicationNo: row[0],
+      name: row[1],
+      mobile: row[2],
+      whatsapp: row[3],
+      reason: row[4],
+      createdAt: row[5]
+    }));
+    return json({ success: true, applications });
+  } catch (error) {
+    return json({ success: false, error: String(error), applications: [] });
+  }
+}
+
+function json(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
